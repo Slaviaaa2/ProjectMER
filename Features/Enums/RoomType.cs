@@ -1,3 +1,9 @@
+// -----------------------------------------------------------------------
+// RoomType enum values and XML documentation are derived from EXILED
+// (https://github.com/ExMod-Team/EXILED)
+// Copyright (c) ExMod Team. Licensed under the CC BY-SA 3.0 license.
+// -----------------------------------------------------------------------
+
 namespace ProjectMER.Features.Enums;
 
 /// <summary>
