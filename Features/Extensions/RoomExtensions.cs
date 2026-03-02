@@ -1,3 +1,9 @@
+// -----------------------------------------------------------------------
+// FindRoomType method and its GameObject name-to-RoomType mapping are
+// derived from EXILED (https://github.com/ExMod-Team/EXILED)
+// Copyright (c) ExMod Team. Licensed under the CC BY-SA 3.0 license.
+// -----------------------------------------------------------------------
+
 using LabApi.Features.Wrappers;
 using MapGeneration;
 using NorthwoodLib.Pools;
