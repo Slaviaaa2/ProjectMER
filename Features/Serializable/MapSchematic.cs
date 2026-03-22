@@ -52,6 +52,8 @@ public class MapSchematic
 
 	public Dictionary<string, SerializableWaypoint> Waypoints { get; set; } = [];
 
+	public Dictionary<string, SerializableCustomTriggerPoint> CustomTriggerPoints { get; set; } = [];
+
 	public List<MapEditorObject> SpawnedObjects = [];
 
 	public MapSchematic Merge(MapSchematic other)
@@ -71,6 +73,7 @@ public class MapSchematic
 		Teleports.AddRange(other.Teleports);
 		Lockers.AddRange(other.Lockers);
 		Waypoints.AddRange(other.Waypoints);
+		CustomTriggerPoints.AddRange(other.CustomTriggerPoints);
 
 		return this;
 	}
@@ -111,6 +114,7 @@ public class MapSchematic
 			SpawnObject(kVP.Key, kVP.Value);
 		});
 		Waypoints.ForEach(kVP => SpawnObject(kVP.Key, kVP.Value));
+		CustomTriggerPoints.ForEach(kVP => SpawnObject(kVP.Key, kVP.Value));
 	}
 
 	public void SpawnObject<T>(string id, T serializableObject) where T : SerializableObject
@@ -194,6 +198,9 @@ public class MapSchematic
 		if (Waypoints.TryAdd(id, serializableObject))
 			return true;
 
+		if (CustomTriggerPoints.TryAdd(id, serializableObject))
+			return true;
+
 		IsDirty = dirtyPrevValue;
 		return false;
 	}
@@ -246,6 +253,9 @@ public class MapSchematic
 			return true;
 
 		if (Waypoints.Remove(id))
+			return true;
+
+		if (CustomTriggerPoints.Remove(id))
 			return true;
 
 		IsDirty = dirtyPrevValue;
