@@ -30,7 +30,10 @@ public class SerializableText : SerializableObject, IIndicatorDefinition
 		text.Network_displaySize = DisplaySize;
 
 		if (instance == null)
+		{
 			NetworkServer.Spawn(text.gameObject);
+			CullingManager.RegisterCullable(text.netIdentity);
+		}
 
 		return text.gameObject;
 	}

@@ -41,7 +41,10 @@ public class SerializablePrimitive : SerializableObject
 		primitive.NetworkPrimitiveFlags = PrimitiveFlags;
 
 		if (instance == null)
+		{
 			NetworkServer.Spawn(primitive.gameObject);
+			CullingManager.RegisterCullable(primitive.netIdentity);
+		}
 
 		return primitive.gameObject;
 	}

@@ -1,5 +1,6 @@
 using LabApi.Features.Wrappers;
 using MEC;
+using Mirror;
 using ProjectMER.Features.Serializable;
 using ProjectMER.Features.ToolGun;
 using UnityEngine;
@@ -73,6 +74,9 @@ public class MapEditorObject : MonoBehaviour
 	/// </summary>
 	public void Destroy()
 	{
+		if (TryGetComponent(out NetworkIdentity identity))
+			CullingManager.UnregisterCullable(identity);
+
 		IndicatorObject.TryDestroyIndicator(this);
 		Destroy(gameObject);
 	}

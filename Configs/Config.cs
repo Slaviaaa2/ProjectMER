@@ -10,6 +10,15 @@ public class Config
 	[Description("Whether the object will be auto selected when spawning it.")]
 	public bool AutoSelect { get; set; } = true;
 
+	[Description("Enables distance-based culling for heavy objects (TextToys, Primitives). When enabled, these objects are only sent to players within CullingDistance, drastically reducing network traffic and client load for maps with large images.")]
+	public bool EnableCulling { get; set; } = false;
+
+	[Description("The maximum distance (in meters) at which cullable objects are visible to players. Objects beyond this distance are not sent to the client.")]
+	public float CullingDistance { get; set; } = 50f;
+
+	[Description("How often (in seconds) the culling system checks and updates object visibility for all players.")]
+	public float CullingUpdateInterval { get; set; } = 2f;
+
 	[Description(
 	"\n" +
 	"# ------------------------------Actions on event------------------------------\n" +
