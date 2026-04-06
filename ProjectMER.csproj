@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SL-CustomObjects\**" />
+    <None Remove="SL-CustomObjects\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="UnityEngine" HintPath="$(SL_REFERENCES)\UnityEngine.dll" />
     <Reference Include="UnityEngine.AnimationModule" HintPath="$(SL_REFERENCES)\UnityEngine.AnimationModule.dll" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(SL_REFERENCES)\UnityEngine.CoreModule.dll" />

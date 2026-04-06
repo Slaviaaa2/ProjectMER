@@ -138,6 +138,7 @@ public class SchematicObject : MonoBehaviour
 		CreateRecursiveFromID(data.RootObjectId, data.Blocks, transform);
 
 		AddRigidbodies();
+		AddTeleports();
 		AddAnimators();
 
 		Schematic.OnSchematicSpawned(new(this, Name));
@@ -215,6 +216,39 @@ public class SchematicObject : MonoBehaviour
 		_animators.Clear();
 		AssetBundle.UnloadAllAssetBundles(false);
 		return isAnimated;
+	}
+
+	private void AddTeleports()
+	{
+		string teleportPath = Path.Combine(DirectoryPath, $"{Name}-Teleports.json");
+		if (!File.Exists(teleportPath))
+			return;
+
+		List<SchematicTeleportData> teleportDataList = JsonSerializer.Deserialize<List<SchematicTeleportData>>(File.ReadAllText(teleportPath));
+
+		foreach (SchematicTeleportData teleportData in teleportDataList)
+		{
+			GameObject teleportGo = new GameObject(teleportData.Name);
+
+			Transform parentTransform = ObjectFromId.TryGetValue(teleportData.ParentId, out Transform parentTf)
+				? parentTf
+				: transform;
+
+			teleportGo.transform.SetParent(parentTransform);
+			teleportGo.transform.SetLocalPositionAndRotation(teleportData.Position, Quaternion.Euler(teleportData.Rotation));
+			teleportGo.transform.localScale = teleportData.Scale;
+
+			BoxCollider boxCollider = teleportGo.AddComponent<BoxCollider>();
+			boxCollider.isTrigger = true;
+			boxCollider.size = teleportData.TriggerScale;
+
+			SchematicTeleportObject teleportComponent = teleportGo.AddComponent<SchematicTeleportObject>();
+			teleportComponent.Id = teleportData.Id;
+			teleportComponent.Targets = teleportData.Targets;
+			teleportComponent.Cooldown = teleportData.Cooldown;
+
+			ObjectFromId[teleportData.ObjectId] = teleportGo.transform;
+		}
 	}
 
 	private bool AddRigidbodies()

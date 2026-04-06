@@ -1,6 +1,8 @@
 using AdminToys;
 using InventorySystem.Items.Firearms.Attachments;
 using LabApi.Features.Wrappers;
+using MapGeneration.Distributors;
+using Mirror;
 using ProjectMER.Events.Handlers.Internal;
 using ProjectMER.Features.Enums;
 using ProjectMER.Features.Extensions;
@@ -10,6 +12,7 @@ using LightSourceToy = AdminToys.LightSourceToy;
 using PrimitiveObjectToy = AdminToys.PrimitiveObjectToy;
 using TextToy = AdminToys.TextToy;
 using WaypointToy = AdminToys.WaypointToy;
+using LabApiLocker = LabApi.Features.Wrappers.Locker;
 
 namespace ProjectMER.Features.Serializable.Schematics;
 
@@ -45,6 +48,7 @@ public class SchematicBlockData
 			BlockType.Text => CreateText(),
 			BlockType.Interactable => CreateInteractable(),
 			BlockType.Waypoint => CreateWaypoint(),
+			BlockType.Locker => CreateLocker(),
 			_ => CreateEmpty(true)
 		};
 
@@ -184,5 +188,44 @@ public class SchematicBlockData
 		waypoint.NetworkPriority = byte.MaxValue;
 
 		return waypoint.gameObject;
+	}
+
+	private GameObject CreateLocker()
+	{
+		if (!Properties.TryGetValue("LockerType", out object lockerTypeObj))
+			return CreateEmpty(true);
+
+		LockerType lockerType = (LockerType)Convert.ToInt32(lockerTypeObj);
+
+		MapGeneration.Distributors.Locker prefab = lockerType switch
+		{
+			LockerType.PedestalScp500 => PrefabManager.PedestalScp500,
+			LockerType.LargeGun => PrefabManager.LockerLargeGun,
+			LockerType.RifleRack => PrefabManager.LockerRifleRack,
+			LockerType.Misc => PrefabManager.LockerMisc,
+			LockerType.Medkit => PrefabManager.LockerRegularMedkit,
+			LockerType.Adrenaline => PrefabManager.LockerAdrenalineMedkit,
+			LockerType.PedestalScp018 => PrefabManager.PedestalScp018,
+			LockerType.PedestalScp207 => PrefabManager.PedstalScp207,
+			LockerType.PedestalScp244 => PrefabManager.PedestalScp244,
+			LockerType.PedestalScp268 => PrefabManager.PedestalScp268,
+			LockerType.PedestalScp1853 => PrefabManager.PedstalScp1853,
+			LockerType.PedestalScp2176 => PrefabManager.PedestalScp2176,
+			LockerType.PedestalScpScp1576 => PrefabManager.PedestalScp1576,
+			LockerType.PedestalAntiScp207 => PrefabManager.PedestalAntiScp207,
+			LockerType.PedestalScp1344 => PrefabManager.PedestalScp1344,
+			LockerType.ExperimentalWeapon => PrefabManager.LockerExperimentalWeapon,
+			_ => PrefabManager.LockerMisc,
+		};
+
+		MapGeneration.Distributors.Locker locker = GameObject.Instantiate(prefab);
+
+		if (locker.TryGetComponent(out StructurePositionSync structurePositionSync))
+		{
+			structurePositionSync.Network_position = locker.transform.position;
+			structurePositionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(locker.transform.rotation.eulerAngles.y / 5.625f);
+		}
+
+		return locker.gameObject;
 	}
 }
